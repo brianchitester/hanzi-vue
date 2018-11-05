@@ -9,41 +9,41 @@
           Sign up
         </div>
       </div>
-	    <div>
+      <div>
         <input v-model="maxCharacters" v-on:change="reset" class="maxCharacters" type="number" value="1000" min="50" max="1500" />
         most common characters.
-	    </div>
-	    <div class="characters" v-if="currentCharacter.simplified !== currentCharacter.traditional">
-	    	{{ currentCharacter.simplified }} / {{ currentCharacter.traditional }}
-	    </div>
-	    <div class="characters" v-else>
-	    	{{ currentCharacter.simplified }}
-	    </div>
-	    <div class="sentence">
-	    	<div v-html="currentSentence.simplified" class="simplified"></div>
-	    	<div
-	    		v-html="currentSentence.traditional"
-	    		v-if="currentCharacter.simplified !== currentCharacter.traditional"
-	    		class="traditional"></div>
-	    </div>
-	    <div
-	    	v-if="pinyinAnswer && meaningAnswer"
-	    	v-html="currentSentence.pinyin"
-	    	class="pinyinSentence"></div>
-	    <div
-	    	v-if="pinyinAnswer && meaningAnswer"
-	    	v-html="currentSentence.english"
-	    	class="englishSentence"></div>
-	    <div class="answers">
-    		<button v-if="!pinyinAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="pinyinAnswer = answer.pinyin">
-    			{{ answer.pinyin }}
-    		</button>
-    		<button v-if="pinyinAnswer && !meaningAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="meaningAnswer = answer.definition">
-    			{{ answer.definition }}
-    		</button>
-	    </div>
-	    <div class="results">
-		    <button v-if="pinyinCorrect !== undefined && meaningCorrect !== undefined" v-on:click="submitAnswer">Next</button>
+      </div>
+      <div class="characters" v-if="currentCharacter.simplified !== currentCharacter.traditional">
+        {{ currentCharacter.simplified }} / {{ currentCharacter.traditional }}
+      </div>
+      <div class="characters" v-else>
+        {{ currentCharacter.simplified }}
+      </div>
+      <div class="sentence">
+        <div v-html="currentSentence.simplified" class="simplified"></div>
+        <div
+          v-html="currentSentence.traditional"
+          v-if="currentCharacter.simplified !== currentCharacter.traditional"
+          class="traditional"></div>
+      </div>
+      <div
+        v-if="pinyinAnswer && meaningAnswer"
+        v-html="currentSentence.pinyin"
+        class="pinyinSentence"></div>
+      <div
+        v-if="pinyinAnswer && meaningAnswer"
+        v-html="currentSentence.english"
+        class="englishSentence"></div>
+      <div class="answers">
+        <button v-if="!pinyinAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="pinyinAnswer = answer.pinyin">
+          {{ answer.pinyin }}
+        </button>
+        <button v-if="pinyinAnswer && !meaningAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="meaningAnswer = answer.definition">
+          {{ answer.definition }}
+        </button>
+      </div>
+      <div class="results">
+        <button v-if="pinyinCorrect !== undefined && meaningCorrect !== undefined" v-on:click="submitAnswer">Next</button>
         <div v-if="pinyinCorrect !== undefined"
           v-bind:class="{ correct: pinyinCorrect, incorrect: !pinyinCorrect }">
           {{ currentCharacter.pinyin }}
@@ -53,20 +53,20 @@
           v-bind:class="{ correct: meaningCorrect, incorrect: !meaningCorrect }">
           {{ currentCharacter.definition }}
         </div>
-	    </div>
-	    <div class="scores">
+      </div>
+      <div class="scores">
         <div class="score pinyinScore">
           pinyin score: <div class="pinyinCorrect"> {{ pinyinScore }}</div> / <div class="pinyinTotal">{{ total }}</div>
         </div>
         <div class="score englishScore">
           meaning score: <div class="englishCorrect"> {{ meaningScore }}</div> / <div class="englishTotal">{{ total }}</div>
         </div>
-	    </div>
-	    <div class="pastGames">
-	    	<div v-for="(pastGame, index) in pastGames" :key="`pastGame-${index}`">
-	    		{{ pastGame }}
-	    	</div>
-	    </div>
+      </div>
+      <div class="pastGames">
+        <div v-for="(pastGame, index) in pastGames" :key="`pastGame-${index}`">
+          {{ pastGame }}
+        </div>
+      </div>
   </div>
 </template>
 
