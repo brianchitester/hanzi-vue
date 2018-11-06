@@ -1,39 +1,40 @@
 <template>
   <div>
-    <h1>汉字 / 漢字 / Hàn Zì</h1>
-      <div v-if="!isSignedIn">
-        <div v-on:click="login">
-          Login
-        </div>
-        <div v-on:click="signUp">
-          Sign up
-        </div>
+    <div class="topRight" v-if="!isSignedIn">
+      <div v-on:click="login">
+        Login
       </div>
+      <div v-on:click="signUp">
+        Sign up
+      </div>
+    </div>
+    <div class="topLeft">
+      <h1>汉字 / 漢字 / Hàn Zì</h1>
       <div>
         <input v-model="maxCharacters" v-on:change="reset" class="maxCharacters" type="number" value="1000" min="50" max="1500" />
         most common characters.
       </div>
+    </div>
+    <div class="middle">
       <div class="characters" v-if="currentCharacter.simplified !== currentCharacter.traditional">
         {{ currentCharacter.simplified }} / {{ currentCharacter.traditional }}
       </div>
       <div class="characters" v-else>
         {{ currentCharacter.simplified }}
       </div>
-      <div class="sentence">
-        <div v-html="currentSentence.simplified" class="simplified"></div>
-        <div
-          v-html="currentSentence.traditional"
-          v-if="currentCharacter.simplified !== currentCharacter.traditional"
-          class="traditional"></div>
-      </div>
+      <div v-html="currentSentence.simplified" class="simplified chinese-sentence"></div>
+      <div
+        v-html="currentSentence.traditional"
+        v-if="currentCharacter.simplified !== currentCharacter.traditional"
+        class="traditional chinese-sentence"></div>
       <div
         v-if="pinyinAnswer && meaningAnswer"
         v-html="currentSentence.pinyin"
-        class="pinyinSentence"></div>
+        class="sentence"></div>
       <div
         v-if="pinyinAnswer && meaningAnswer"
         v-html="currentSentence.english"
-        class="englishSentence"></div>
+        class="sentence"></div>
       <div class="answers">
         <button v-if="!pinyinAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="pinyinAnswer = answer.pinyin">
           {{ answer.pinyin }}
@@ -62,11 +63,12 @@
           meaning score: <div class="englishCorrect"> {{ meaningScore }}</div> / <div class="englishTotal">{{ total }}</div>
         </div>
       </div>
-      <div class="pastGames">
-        <div v-for="(pastGame, index) in pastGames" :key="`pastGame-${index}`">
-          {{ pastGame }}
-        </div>
+    </div>
+    <div class="pastGames">
+      <div v-for="(pastGame, index) in pastGames" :key="`pastGame-${index}`">
+        {{ pastGame }}
       </div>
+    </div>
   </div>
 </template>
 
@@ -265,6 +267,24 @@ h1 {
   font-size: 1em;
 }
 
+.middle {
+  height: 100vh;
+  background-image: url(../assets/background.png)
+}
+
+.topRight {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  text-align: right;
+}
+
+.topLeft {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+}
+
 .black {
   color: black;
   font-weight: bold;
@@ -284,30 +304,26 @@ h1 {
   font-size: 2em;
 }
 
-.sentence {
-  width: 100%;
-  color: #444;
-  text-align: center;
-  font-size: 2em;
-}
 .bold {
   color: black;
 }
 
-.pinyinSentence{
+.sentence{
   width: 100%;
   color: #444;
   text-align: center;
   height: 1.5em;
   font-size: 1.5em;
+  margin-bottom: 1px;
 }
 
-.englishSentence{
+.chinese-sentence{
   width: 100%;
   color: #444;
   text-align: center;
-  height: 1.5em;
-  font-size: 1.5em;
+  height: 1.8em;
+  font-size: 1.8em;
+  margin-bottom: 1px;
 }
 
 .helpers div {
@@ -366,7 +382,7 @@ h1 {
 .scores {
   width: 100%;
   text-align: center;
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
 .score {
