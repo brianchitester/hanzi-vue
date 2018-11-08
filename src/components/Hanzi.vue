@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="topRight" v-if="!isSignedIn">
+    <div class="right" v-if="!isSignedIn">
       <div v-on:click="login">
         Login
       </div>
@@ -8,52 +8,11 @@
         Sign up
       </div>
     </div>
-    <div class="topLeft">
+    <div class="left">
       <h1>汉字 / 漢字 / Hàn Zì</h1>
       <div>
         <input v-model="maxCharacters" v-on:change="reset" class="maxCharacters" type="number" value="1000" min="50" max="1500" />
         most common characters.
-      </div>
-    </div>
-    <div class="middle">
-      <div class="characters" v-if="currentCharacter.simplified !== currentCharacter.traditional">
-        {{ currentCharacter.simplified }} / {{ currentCharacter.traditional }}
-      </div>
-      <div class="characters" v-else>
-        {{ currentCharacter.simplified }}
-      </div>
-      <div v-html="currentSentence.simplified" class="simplified chinese-sentence"></div>
-      <div
-        v-html="currentSentence.traditional"
-        v-if="currentCharacter.simplified !== currentCharacter.traditional"
-        class="traditional chinese-sentence"></div>
-      <div
-        v-if="pinyinAnswer && meaningAnswer"
-        v-html="currentSentence.pinyin"
-        class="sentence"></div>
-      <div
-        v-if="pinyinAnswer && meaningAnswer"
-        v-html="currentSentence.english"
-        class="sentence"></div>
-      <div class="answers">
-        <button v-if="!pinyinAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="pinyinAnswer = answer.pinyin">
-          {{ answer.pinyin }}
-        </button>
-        <button v-if="pinyinAnswer && !meaningAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="meaningAnswer = answer.definition">
-          {{ answer.definition }}
-        </button>
-      </div>
-      <div class="results">
-        <button v-if="pinyinCorrect !== undefined && meaningCorrect !== undefined" v-on:click="submitAnswer">Next</button>
-        <div v-if="pinyinCorrect !== undefined"
-          v-bind:class="{ correct: pinyinCorrect, incorrect: !pinyinCorrect }">
-          {{ currentCharacter.pinyin }}
-        </div>
-        <div class="dash">-</div>
-        <div v-if="meaningCorrect !== undefined"
-          v-bind:class="{ correct: meaningCorrect, incorrect: !meaningCorrect }">
-          {{ currentCharacter.definition }}
-        </div>
       </div>
       <div class="scores">
         <div class="score pinyinScore">
@@ -63,10 +22,53 @@
           meaning score: <div class="englishCorrect"> {{ meaningScore }}</div> / <div class="englishTotal">{{ total }}</div>
         </div>
       </div>
+      <div class="pastGames">
+        <div v-for="(pastGame, index) in pastGames" :key="`pastGame-${index}`">
+          {{ pastGame }}
+        </div>
+      </div>
     </div>
-    <div class="pastGames">
-      <div v-for="(pastGame, index) in pastGames" :key="`pastGame-${index}`">
-        {{ pastGame }}
+    <div class="middle">
+      <div class="characters" v-if="currentCharacter.simplified !== currentCharacter.traditional">
+        {{ currentCharacter.simplified }} / {{ currentCharacter.traditional }}
+      </div>
+      <div class="characters" v-else>
+        {{ currentCharacter.simplified }}
+      </div>
+      <div v-html="currentSentence.simplified" class="simplified chinese-sentence sentence"></div>
+      <div
+        v-html="currentSentence.traditional"
+        v-if="currentCharacter.simplified !== currentCharacter.traditional"
+        class="traditional chinese-sentence sentence"></div>
+      <div
+        v-if="pinyinAnswer && meaningAnswer"
+        v-html="currentSentence.pinyin"
+        class="sentence"></div>
+      <div
+        v-if="pinyinAnswer && meaningAnswer"
+        v-html="currentSentence.english"
+        class="sentence"></div>
+      <div class="bottom">
+        <div class="answers">
+          <button v-if="!pinyinAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="pinyinAnswer = answer.pinyin">
+            {{ answer.pinyin }}
+          </button>
+          <button v-if="pinyinAnswer && !meaningAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="meaningAnswer = answer.definition">
+            {{ answer.definition }}
+          </button>
+        </div>
+        <div class="results">
+          <button v-if="pinyinCorrect !== undefined && meaningCorrect !== undefined" v-on:click="submitAnswer">Next</button>
+          <div v-if="pinyinCorrect !== undefined"
+            v-bind:class="{ correct: pinyinCorrect, incorrect: !pinyinCorrect }">
+            {{ currentCharacter.pinyin }}
+          </div>
+          <div class="dash">-</div>
+          <div v-if="meaningCorrect !== undefined"
+            v-bind:class="{ correct: meaningCorrect, incorrect: !meaningCorrect }">
+            {{ currentCharacter.definition }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -268,18 +270,27 @@ h1 {
 }
 
 .middle {
-  height: 100vh;
-  background-image: url(../assets/background.png)
+  width: 75%;
+  margin: 0 0 0 20%;
 }
 
-.topRight {
+.bottom {
+  position: absolute;
+  bottom: 25px;
+  left: 0px;
+  width: 75%;
+  margin: 0 0 0 20%;
+}
+
+
+.right {
   position: absolute;
   top: 6px;
   right: 10px;
   text-align: right;
 }
 
-.topLeft {
+.left {
   position: absolute;
   top: 6px;
   left: 10px;
@@ -308,22 +319,18 @@ h1 {
   color: black;
 }
 
-.sentence{
+.sentence {
   width: 100%;
   color: #444;
   text-align: center;
-  height: 1.5em;
   font-size: 1.5em;
-  margin-bottom: 1px;
+  margin-bottom: .5em;
+  box-shadow: 0 10px 14px -14px gray;
+  padding-bottom: 10px;
 }
 
-.chinese-sentence{
-  width: 100%;
-  color: #444;
-  text-align: center;
-  height: 1.8em;
+.chinese-sentence {
   font-size: 1.8em;
-  margin-bottom: 1px;
 }
 
 .helpers div {
@@ -331,12 +338,10 @@ h1 {
 }
 
 .answers {
-  width: 100%;
   text-align: center;
 }
 
 .results {
-  width: 100%;
   text-align: center;
   font-size: 1.5em;
 }
@@ -348,7 +353,7 @@ h1 {
 .results button{
   display: block;
   margin: 10px auto;
-  background-color: #4CAF50; /* Green */
+  background-color: rgb(68, 158, 71); /* Green */
   border: none;
   color: white;
   padding: 15px;
@@ -356,19 +361,13 @@ h1 {
   text-decoration: none;
   font-size: 1em;
   cursor: pointer;
-}
-
-.correct {
-  color: #4CAF50;
-}
-
-.incorrect {
-  color: red;
+  border-radius: 5px;
+  min-width: 100px;
 }
 
 .answers button {
   margin: 10px;
-  background-color: #4CAF50; /* Green */
+  background-color: rgb(68, 158, 71); /* Green */
   border: none;
   color: white;
   padding: 15px;
@@ -377,17 +376,25 @@ h1 {
   display: inline-block;
   font-size: 1.5em;
   cursor: pointer;
+  border-radius: 5px;
+  min-width: 100px;
 }
 
+.correct {
+  color: rgb(68, 158, 71);
+}
+
+.incorrect {
+  color: rgb(212, 0, 0);
+}
+
+
 .scores {
-  width: 100%;
-  text-align: center;
-  font-size: 1.5em;
+  margin: 20px 0;
 }
 
 .score {
-  display: inline-block;
-  margin: 0px 50px;
+  display: block;
 }
 
 .score div {
@@ -396,7 +403,5 @@ h1 {
 
 .pastGames {
   display: block;
-  position: absolute;
-  top: 100px;
 }
 </style>
