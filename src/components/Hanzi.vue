@@ -349,7 +349,7 @@ h1 {
 
 .mobile .characters {
   font-size: 5em;
-  margin: 5px 0 8px 0;
+  margin-bottom: 6px;
 }
 
 .characters {
@@ -400,6 +400,10 @@ h1 {
   text-align: center;
 }
 
+.mobile .results {
+  font-size: 1em;
+}
+
 .results {
   text-align: center;
   font-size: 1.5em;
@@ -427,8 +431,8 @@ h1 {
 .mobile .answers button {
   font-size: 1em;
   min-width: 60px;
-
 }
+
 .answers button {
   margin: 10px;
   background-color: rgb(68, 158, 71); /* Green */
@@ -453,6 +457,9 @@ h1 {
 }
 
 
+.mobile .scores {
+  margin: 10px 0;
+}
 .scores {
   margin: 20px 0;
 }
