@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-bind:class="[{ mobile: isMobile }]">
     <div class="right" v-if="!isSignedIn">
       <div v-on:click="login">
         Login
@@ -11,7 +11,7 @@
     <div class="left">
       <h1>汉字 / 漢字 / Hàn Zì</h1>
       <div>
-        <input v-model="maxCharacters" v-on:change="reset" class="maxCharacters" type="number" value="1000" min="50" max="1500" />
+        <input v-model="maxCharacters" v-on:change="reset" class="maxCharacters" type="number" value="100" min="50" max="1500" />
         most common characters.
       </div>
       <div class="scores">
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="stats-link" v-if="isSignedIn" v-on:click="goToStats">
+      <div class="stats-link" v-if="isSignedIn && !isMobile" v-on:click="goToStats">
         view full stats
       </div>
 
@@ -117,7 +117,8 @@ const getCurrentSentence = (currentCharacter) => {
   return sentence
 }
 
-const defaultMax = 1000
+
+const defaultMax = window.localStorage.getItem('maxCharacters') || 100
 const sentences = require('./sentences.json')
 const characters = require('./characters.json')
 
@@ -181,6 +182,7 @@ export default {
       this.$router.replace('/stats')
     },
     reset: function() {
+      window.localStorage.setItem('maxCharacters', this.maxCharacters)
       this.pinyinAnswer = ''
       this.meaningAnswer = ''
       this.characterIndex = getRandom(0, this.maxCharacters)
@@ -302,11 +304,19 @@ h1 {
   cursor: pointer;
 }
 
+.mobile .middle {
+  width: 75%;
+  margin: auto;
+}
 .middle {
   width: 75%;
   margin: 0 0 0 20%;
 }
 
+.mobile .bottom {
+  width: 100%;
+  margin: auto;
+}
 .bottom {
   position: absolute;
   bottom: 25px;
@@ -315,12 +325,15 @@ h1 {
   margin: 0 0 0 20%;
 }
 
-
 .right {
   position: absolute;
   top: 6px;
   right: 10px;
   text-align: right;
+}
+
+.mobile .left {
+  position: relative;
 }
 
 .left {
@@ -332,6 +345,11 @@ h1 {
 .black {
   color: black;
   font-weight: bold;
+}
+
+.mobile .characters {
+  font-size: 5em;
+  margin: 5px 0 8px 0;
 }
 
 .characters {
@@ -352,6 +370,11 @@ h1 {
   color: black;
 }
 
+.mobile .sentence {
+  font-size: 1em;
+  margin-bottom: .7em;
+}
+
 .sentence {
   width: 100%;
   color: #444;
@@ -362,6 +385,9 @@ h1 {
   padding-bottom: 10px;
 }
 
+.mobile .chinese-sentence {
+  font-size: 1.2em;
+}
 .chinese-sentence {
   font-size: 1.8em;
 }
@@ -398,6 +424,11 @@ h1 {
   min-width: 100px;
 }
 
+.mobile .answers button {
+  font-size: 1em;
+  min-width: 60px;
+
+}
 .answers button {
   margin: 10px;
   background-color: rgb(68, 158, 71); /* Green */
