@@ -131,10 +131,12 @@ window.mobilecheck = function() {
 export default {
   name: 'Hanzi',
   data() {
-    const currentCharacter = characters[1]
+    const currentCharacter = characters[getRandom(0, defaultMax)]
     const currentSentence = getCurrentSentence(currentCharacter)
 
     return {
+      isSignedIn: firebase.auth().currentUser,
+      isMobile: window.mobilecheck(),
       currentTime: Date.now(),
       characterIndex: getRandom(0, defaultMax),
       maxCharacters: defaultMax,
@@ -147,9 +149,7 @@ export default {
       sentences,
       characters,
       currentCharacter,
-      currentSentence,
-      isSignedIn: firebase.auth().currentUser,
-      isMobile: window.mobilecheck()
+      currentSentence
     }
   },
   computed: {
@@ -458,7 +458,7 @@ h1 {
 
 
 .mobile .scores {
-  margin: 10px 0;
+  margin: 5px 0;
 }
 .scores {
   margin: 20px 0;
