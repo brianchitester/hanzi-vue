@@ -1,6 +1,9 @@
 <template>
   <div class="stats">
     <h3 v-on:click="getScores">Stats</h3>
+    <div class="knownCount">
+      {{ knownCount }} known characters out of {{ scoresArray.length }}
+    </div>
     <div class="loading" v-if="loading">
       Loading...
     </div>
@@ -9,8 +12,8 @@
       {{ error }}
     </div>
     <div class="scores">
-      <div class="score" v-for="(score,  key) in scores" :key="`score-${key}`" >
-        {{key}} // pinyin:{{score.pinyin.correct}}/{{score.pinyin.incorrect}} meaning: {{score.meaning.correct}}/{{score.meaning.incorrect}}
+      <div class="score" v-for="(key, index) in scoresArray" :key="`score-${index}`" >
+        {{key}} // pinyin:{{scores[key].pinyin.correct}}/{{scores[key].pinyin.incorrect + scores[key].pinyin.correct}} meaning: {{scores[key].meaning.correct}}/{{scores[key].meaning.incorrect + scores[key].meaning.correct}}
       </div>
     </div>
   </div>
@@ -27,7 +30,8 @@
         characters: [],
         isSignedIn: firebase.auth().currentUser,
         loading: true,
-        error: null
+        error: null,
+        knownCount: 0
       }
     },
     created () {
@@ -43,7 +47,27 @@
         const scoresRef = db.collection("scores").doc(firebase.auth().currentUser.email)
         scoresRef.get().then(doc => {
             if (doc.exists) {
-              this.scores = doc.data()
+              const scores = doc.data()
+              this.scores = scores
+              this.scoresArray = Object.keys(this.scores).sort(function(a, b) {
+                const aScore = (scores[a].meaning.correct - scores[a].meaning.incorrect)
+                + (scores[a].pinyin.correct - scores[a].pinyin.incorrect)
+                const bScore = (scores[b].meaning.correct - scores[b].meaning.incorrect)
+                + (scores[b].pinyin.correct - scores[b].pinyin.incorrect)
+
+                return bScore - aScore;
+              });
+
+              const knownCharacters = Object.keys(this.scores).reduce(function(memo, key) {
+                if ((scores[key].meaning.correct - scores[key].meaning.incorrect) >= scores[key].meaning.correct / 2
+                  && (scores[key].pinyin.correct - scores[key].pinyin.incorrect) >= scores[key].pinyin.correct / 2 ) {
+                  return memo + 1
+                }
+                return memo
+              }, 0)
+
+              this.knownCount = knownCharacters
+
               this.loading = false
             } else {
               // doc.data() will be undefined in this case
