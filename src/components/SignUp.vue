@@ -1,6 +1,6 @@
 <template>
   <div class="sign-up">
-    <p>Let's create a new account !</p>
+    <h3>Create a new account</h3>
     <input type="text" v-model="email" placeholder="Email"><br>
     <input type="password" v-model="password" placeholder="Password"><br>
     <button v-on:click="signUp">Sign Up</button>
@@ -34,4 +34,15 @@
 </script>
 
 <style scoped>
+input {
+  margin: 10px 0;
+  width: 200px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+button {
+  margin-top: 20px;
+  height: 30px;
+  width: 100px;
+}
 </style>
