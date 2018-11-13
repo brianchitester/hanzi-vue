@@ -4,6 +4,7 @@ import Hanzi from '@/components/Hanzi'
 import SignUp from '@/components/SignUp'
 import Login from '@/components/Login'
 import Stats from '@/components/Stats'
+import Character from '@/components/Character'
 
 Vue.use(Router)
 
@@ -29,6 +30,10 @@ export default new Router({
       path: '/stats',
       name: 'Stats',
       component: Stats
+    },
+    {
+      path: '/character/:hanzi',
+      component: Character
     }
   ]
 })

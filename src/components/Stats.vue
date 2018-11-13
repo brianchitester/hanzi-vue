@@ -13,7 +13,7 @@
     </div>
     <div class="scores">
       <div class="score" v-for="(key, index) in scoresArray" :key="`score-${index}`" >
-        <div class="key">
+        <div class="key" v-on:click="goToCharacter(key)">
           {{key}}
         </div>
         <div class="percent" v-if="getPercentScore(scores[key])"  v-bind:style="{backgroundImage: `linear-gradient(90deg, rgba(68, 158, 71, .3) ${getPercentScore(scores[key])}%, rgba(212, 0, 0, .3), rgba(212, 0, 0, .3))` }" >
@@ -49,6 +49,9 @@
       this.getScores()
     },
     methods: {
+      goToCharacter: function(hanzi) {
+        this.$router.replace('/character/'+ hanzi)
+      },
       getPercentScore: function(scores) {
         return Math.floor(100 * (scores.pinyin.correct + scores.meaning.correct)
             / ( scores.pinyin.incorrect + scores.pinyin.correct + scores.meaning.correct + scores.meaning.incorrect ))

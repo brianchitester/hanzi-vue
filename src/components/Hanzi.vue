@@ -305,8 +305,8 @@ h1 {
 }
 
 .mobile .middle {
-  width: 95%;
-  margin: auto;
+  width: 100%;
+  margin: 0;
 }
 .middle {
   width: 75%;
