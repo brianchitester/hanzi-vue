@@ -50,7 +50,7 @@
     },
     methods: {
       goToCharacter: function(hanzi) {
-        this.$router.replace('/character/'+ hanzi)
+        this.$router.push('/character/'+ hanzi)
       },
       getPercentScore: function(scores) {
         return Math.floor(100 * (scores.pinyin.correct + scores.meaning.correct)
@@ -126,6 +126,7 @@ h3 {
   margin-bottom: 10px;
 }
 .key {
+  cursor: pointer;
   font-size: 24px;
   margin-right: 5px;
 }

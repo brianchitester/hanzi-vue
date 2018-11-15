@@ -4,7 +4,9 @@ var path = require('path');
 var serveStatic = require('serve-static');
 var history = require('connect-history-api-fallback');
 app = express();
-app.use(history());
+app.use(history({
+    index: '/'
+}));
 app.use(serveStatic(__dirname + "/dist"));
 var port = process.env.PORT || 5000;
 process.env.NODE_ENV = 'production'

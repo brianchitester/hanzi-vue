@@ -55,10 +55,10 @@
         class="sentence"></div>
       <div class="bottom">
         <div class="answers">
-          <button v-if="!pinyinAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="pinyinAnswer = answer.pinyin">
+          <button v-if="!pinyinAnswer" v-for="(answer, index) in currentPinyinAnswers" :key="`answer-${index}`" v-on:click="pinyinAnswer = answer.pinyin">
             {{ answer.pinyin }}
           </button>
-          <button v-if="pinyinAnswer && !meaningAnswer" v-for="(answer, index) in currentCharacterAnswers" :key="`answer-${index}`" v-on:click="meaningAnswer = answer.definition">
+          <button v-if="pinyinAnswer && !meaningAnswer" v-for="(answer, index) in currentMeaningAnswers" :key="`answer-${index}`" v-on:click="meaningAnswer = answer.definition">
             {{ answer.definition }}
           </button>
         </div>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebase,{ functions } from 'firebase'
 
 function getRandom(min, max) {
   return Math.floor(Math.random() * (max - min) + min)
@@ -153,7 +153,7 @@ export default {
     }
   },
   computed: {
-    currentCharacterAnswers: function () {
+    currentPinyinAnswers: function () {
       // initialize with correct answer
       let answers = [this.currentCharacter]
 
@@ -163,6 +163,9 @@ export default {
       }
 
       return shuffle(answers)
+    },
+    currentMeaningAnswers: function () {
+      return shuffle(this.currentPinyinAnswers)
     },
     pinyinCorrect: function () {
       if (this.pinyinAnswer === '' ) {
@@ -179,7 +182,7 @@ export default {
   },
   methods: {
     goToStats: function() {
-      this.$router.replace('/stats')
+      this.$router.push('/stats')
     },
     reset: function() {
       window.localStorage.setItem('maxCharacters', this.maxCharacters)
@@ -285,10 +288,10 @@ export default {
       this.currentSentence = getCurrentSentence(this.currentCharacter)
     },
     login: function(e) {
-      this.$router.replace('login')
+      this.$router.push('login')
     },
     signUp: function(e) {
-      this.$router.replace('sign-up')
+      this.$router.push('sign-up')
     }
   }
 }
