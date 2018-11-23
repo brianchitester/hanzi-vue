@@ -34,6 +34,20 @@
       </div>
     </div>
     <div class="middle">
+      <div class="seals">
+        <div class="pinyin-seal correct" v-if="pinyinCorrect !== undefined && pinyinCorrect">
+          <div class="mark">對</div> {{ currentCharacter.pinyin }}
+        </div>
+        <div class="pinyin-seal incorrect" v-if="pinyinCorrect !== undefined && !pinyinCorrect">
+          <div class="mark">错</div> {{ currentCharacter.pinyin }}
+        </div>
+        <div class="meaning-seal correct" v-if="meaningCorrect !== undefined && meaningCorrect">
+          <div class="mark">對</div> {{ currentCharacter.definition }}
+        </div>
+        <div class="meaning-seal incorrect" v-if="meaningCorrect !== undefined && !meaningCorrect">
+          <div class="mark">错</div> {{ currentCharacter.definition }}
+        </div>
+      </div>
       <div class="characters" v-if="currentCharacter.simplified !== currentCharacter.traditional">
         {{ currentCharacter.simplified }} / {{ currentCharacter.traditional }}
       </div>
@@ -61,18 +75,9 @@
           <button v-if="pinyinAnswer && !meaningAnswer" v-for="(answer, index) in currentMeaningAnswers" :key="`answer-${index}`" v-on:click="meaningAnswer = answer.definition">
             {{ answer.definition }}
           </button>
-        </div>
-        <div class="results">
-          <button v-if="pinyinCorrect !== undefined && meaningCorrect !== undefined" v-on:click="submitAnswer">Next</button>
-          <div v-if="pinyinCorrect !== undefined"
-            v-bind:class="{ correct: pinyinCorrect, incorrect: !pinyinCorrect }">
-            {{ currentCharacter.pinyin }}
-          </div>
-          <div class="dash">-</div>
-          <div v-if="meaningCorrect !== undefined"
-            v-bind:class="{ correct: meaningCorrect, incorrect: !meaningCorrect }">
-            {{ currentCharacter.definition }}
-          </div>
+          <button v-if="pinyinCorrect !== undefined && meaningCorrect !== undefined" v-on:click="submitAnswer">
+            Next
+          </button>
         </div>
       </div>
     </div>
@@ -100,16 +105,16 @@ function shuffle(a) {
 const getCurrentSentence = (currentCharacter) => {
   let possibleSentences = []
 
-  // get sentences that contain the current character
-  // we get all of them so there can be some variation
-  Object.keys(sentences).forEach( function(key) {
-    if (sentences[key].simplified.indexOf(currentCharacter.simplified) > 0) {
-      possibleSentences.push(sentences[key])
-    }
-  })
+  const exampleSentences = Object.keys(sentences).map(index => {
+        if (sentences[index].simplified.indexOf(currentCharacter.simplified) >= 0){
+          return sentences[index]
+        }
+        return null
+      }).filter(sentence => sentence !== null).sort((a, b) => {return a.simplified.length - b.simplified.length }).slice(0, 15)
+
 
   // get a random sentence from the list of possible ones
-  let sentence = possibleSentences[getRandom(0, possibleSentences.length)]
+  let sentence = exampleSentences[getRandom(0, exampleSentences.length)]
 
   //bold the current character
   sentence.traditional = sentence.traditional.replace(currentCharacter.traditional, "<span style='color:black;font-weight:bold;'>" + currentCharacter.traditional + '</span>' )
@@ -453,12 +458,35 @@ h1 {
 
 .correct {
   color: rgb(68, 158, 71);
+  border: 2px solid rgb(68, 158, 71);
 }
 
 .incorrect {
   color: rgb(212, 0, 0);
+  border: 2px solid rgb(212, 0, 0);
+}
+.seals {
+  position: absolute;
+  left: 80%;
+  top: 0;
 }
 
+.seals > div {
+  width: 75px;
+  height: 75px;
+  text-align: center;
+  border-radius: 4px;
+  padding: 3px;
+  margin: 10px;
+}
+
+.mark {
+  font-size: 30px;
+  font-weight: bold;
+}
+.seals {
+  display: block;
+}
 
 .mobile .scores {
   margin: 5px 0;
