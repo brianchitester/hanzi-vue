@@ -465,10 +465,16 @@ h1 {
   color: rgb(212, 0, 0);
   border: 2px solid rgb(212, 0, 0);
 }
+
 .seals {
   position: absolute;
   left: 80%;
   top: 0;
+}
+
+.mobile .seals {
+  position: absolute;
+  top: 110px;
 }
 
 .seals > div {
@@ -480,10 +486,27 @@ h1 {
   margin: 10px;
 }
 
+.mobile .seals > div {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border-radius: 4px;
+  padding: 3px;
+  margin: 5px;
+  font-size: 14px;
+}
+
 .mark {
   font-size: 30px;
   font-weight: bold;
 }
+
+.mobile .mark {
+  font-weight: bold;
+  font-size: 14px;
+
+}
+
 .seals {
   display: block;
 }
