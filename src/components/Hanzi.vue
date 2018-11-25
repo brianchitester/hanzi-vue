@@ -35,17 +35,21 @@
     </div>
     <div class="middle">
       <div class="seals">
-        <div class="pinyin-seal correct" v-if="pinyinCorrect !== undefined && pinyinCorrect">
-          <div class="mark">對</div> {{ currentCharacter.pinyin }}
+        <div class="pinyin-seal" v-if="pinyinCorrect !== undefined && pinyinCorrect">
+          <div class="mark correct">對</div>
+          <div class="correct-answer"> {{ currentCharacter.pinyin }} </div>
         </div>
-        <div class="pinyin-seal incorrect" v-if="pinyinCorrect !== undefined && !pinyinCorrect">
-          <div class="mark">错</div> {{ currentCharacter.pinyin }}
+        <div class="pinyin-seal" v-if="pinyinCorrect !== undefined && !pinyinCorrect">
+          <div class="mark incorrect">错</div>
+          <div class="correct-answer"> {{ currentCharacter.pinyin }} </div>
         </div>
-        <div class="meaning-seal correct" v-if="meaningCorrect !== undefined && meaningCorrect">
-          <div class="mark">對</div> {{ currentCharacter.definition }}
+        <div class="meaning-seal" v-if="meaningCorrect !== undefined && meaningCorrect">
+          <div class="mark correct">對</div>
+          <div class="correct-answer"> {{ currentCharacter.definition }} </div>
         </div>
-        <div class="meaning-seal incorrect" v-if="meaningCorrect !== undefined && !meaningCorrect">
-          <div class="mark">错</div> {{ currentCharacter.definition }}
+        <div class="meaning-seal" v-if="meaningCorrect !== undefined && !meaningCorrect">
+          <div class="mark incorrect">错</div>
+          <div class="correct-answer"> {{ currentCharacter.definition }} </div>
         </div>
       </div>
       <div class="characters" v-if="currentCharacter.simplified !== currentCharacter.traditional">
@@ -62,7 +66,7 @@
       <div
         v-if="pinyinAnswer && meaningAnswer"
         v-html="currentSentence.pinyin"
-        class="sentence"></div>
+        class="sentence pinyin-sentence"></div>
       <div
         v-if="pinyinAnswer && meaningAnswer"
         v-html="currentSentence.english"
@@ -110,7 +114,7 @@ const getCurrentSentence = (currentCharacter) => {
           return sentences[index]
         }
         return null
-      }).filter(sentence => sentence !== null).sort((a, b) => {return a.simplified.length - b.simplified.length }).slice(0, 15)
+      }).filter(sentence => sentence !== null).sort((a, b) => {return a.simplified.length - b.simplified.length }).slice(0, 6)
 
 
   // get a random sentence from the list of possible ones
@@ -380,7 +384,6 @@ h1 {
 
 .mobile .sentence {
   font-size: 1em;
-  margin-bottom: .7em;
 }
 
 .sentence {
@@ -388,8 +391,6 @@ h1 {
   color: #444;
   text-align: center;
   font-size: 1.5em;
-  margin-bottom: .5em;
-  box-shadow: 0 10px 14px -14px gray;
   padding-bottom: 10px;
 }
 
@@ -398,6 +399,14 @@ h1 {
 }
 .chinese-sentence {
   font-size: 1.8em;
+}
+
+.pinyin-sentence {
+  margin: 20px 0px;
+}
+
+.mobile .pinyin-sentence {
+  margin: 10px 0px;
 }
 
 .helpers div {
@@ -458,18 +467,26 @@ h1 {
 
 .correct {
   color: rgb(68, 158, 71);
-  border: 2px solid rgb(68, 158, 71);
+  border: 1.2px solid rgb(68, 158, 71);
 }
 
 .incorrect {
   color: rgb(212, 0, 0);
-  border: 2px solid rgb(212, 0, 0);
+  border: 1.2px solid rgb(212, 0, 0);
+}
+
+.mobile .correct {
+  border: 1px solid rgb(68, 158, 71);
+}
+
+.mobile .incorrect {
+  border: 1px solid rgb(212, 0, 0);
 }
 
 .seals {
   position: absolute;
   left: 80%;
-  top: 0;
+  top: 30px;
 }
 
 .mobile .seals {
@@ -478,33 +495,41 @@ h1 {
 }
 
 .seals > div {
-  width: 75px;
-  height: 75px;
-  text-align: center;
-  border-radius: 4px;
-  padding: 3px;
+  display: flex;
+  flex-direction: row;
   margin: 10px;
 }
 
+.correct-answer {
+  font-size: 1.8em;
+  padding: 6px 16px;
+}
+
+.mobile .correct-answer {
+  font-size: 10px;
+  padding: 6px 10px;
+}
+
 .mobile .seals > div {
-  width: 40px;
-  height: 40px;
-  text-align: center;
   border-radius: 4px;
-  padding: 3px;
-  margin: 5px;
-  font-size: 14px;
+  padding: 3px 3px 0 3px;
+  margin: 5px 5px 0px 5px;
 }
 
 .mark {
-  font-size: 30px;
+  position: fixed;
+  text-align: center;
+  border-radius: 4px;
+  padding: 3px;
+  font-size: 14px;
   font-weight: bold;
+  opacity: 0.8;
+  transform: rotate(10deg);
 }
 
 .mobile .mark {
-  font-weight: bold;
-  font-size: 14px;
-
+  font-size: 10px;
+  padding: 1px;
 }
 
 .seals {
