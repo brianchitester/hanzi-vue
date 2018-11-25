@@ -349,7 +349,7 @@ h1 {
 
 .mobile .left {
   position: relative;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .left {
