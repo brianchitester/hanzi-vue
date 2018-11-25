@@ -1,5 +1,5 @@
 <template>
-  <div class="stats">
+  <div class="stats" v-bind:class="[{ mobile: isMobile }]">
     <h3 v-on:click="getScores">Stats</h3>
     <div class="knownCount">
       {{ knownCount }} known characters out of {{ scoresArray.length }}
@@ -35,6 +35,7 @@
     name: 'Stats',
     data: function() {
       return {
+        isMobile: window.mobilecheck(),
         scores: {},
         characters: [],
         isSignedIn: firebase.auth().currentUser,
@@ -118,9 +119,16 @@ h3 {
   flex-wrap: wrap;
   max-height: 85vh;
 }
+.mobile .scores {
+  display: block;
+}
 .score {
   display: flex;
   margin-right: 5px;
+}
+.mobile .score {
+  margin-right: 0px;
+  margin-bottom: 4px;
 }
 .knownCount {
   margin-bottom: 10px;
@@ -134,6 +142,9 @@ h3 {
   width: 70%;
   text-align: center;
   margin-bottom: 2px;
+}
+.mobile .percent {
+  width: 100%;
 }
 
 </style>
