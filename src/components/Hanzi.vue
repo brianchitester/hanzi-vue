@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="[{ mobile: isMobile }]">
+  <div class="hanzi" v-bind:class="[{ mobile: isMobile }]">
     <div class="right" v-if="!isSignedIn">
       <div v-on:click="login">
         Login
@@ -34,45 +34,47 @@
       </div>
     </div>
     <div class="middle">
-      <div class="seals">
-        <div class="pinyin-seal" v-if="pinyinCorrect !== undefined && pinyinCorrect">
-          <div class="mark correct">對</div>
-          <div class="correct-answer"> {{ currentCharacter.pinyin }} </div>
+      <div class="top-middle">
+        <div class="seals">
+          <div class="pinyin-seal" v-if="pinyinCorrect !== undefined && pinyinCorrect">
+            <div class="mark correct">對</div>
+            <div class="correct-answer"> {{ currentCharacter.pinyin }} </div>
+          </div>
+          <div class="pinyin-seal" v-if="pinyinCorrect !== undefined && !pinyinCorrect">
+            <div class="mark incorrect">错</div>
+            <div class="correct-answer"> {{ currentCharacter.pinyin }} </div>
+          </div>
+          <div class="meaning-seal" v-if="meaningCorrect !== undefined && meaningCorrect">
+            <div class="mark correct">對</div>
+            <div class="correct-answer"> {{ currentCharacter.definition }} </div>
+          </div>
+          <div class="meaning-seal" v-if="meaningCorrect !== undefined && !meaningCorrect">
+            <div class="mark incorrect">错</div>
+            <div class="correct-answer"> {{ currentCharacter.definition }} </div>
+          </div>
         </div>
-        <div class="pinyin-seal" v-if="pinyinCorrect !== undefined && !pinyinCorrect">
-          <div class="mark incorrect">错</div>
-          <div class="correct-answer"> {{ currentCharacter.pinyin }} </div>
+        <div class="characters">
+          {{
+            currentCharacter.simplified !== currentCharacter.traditional ?
+              currentCharacter.simplified + " / " + currentCharacter.traditional :
+              currentCharacter.simplified
+          }}
         </div>
-        <div class="meaning-seal" v-if="meaningCorrect !== undefined && meaningCorrect">
-          <div class="mark correct">對</div>
-          <div class="correct-answer"> {{ currentCharacter.definition }} </div>
-        </div>
-        <div class="meaning-seal" v-if="meaningCorrect !== undefined && !meaningCorrect">
-          <div class="mark incorrect">错</div>
-          <div class="correct-answer"> {{ currentCharacter.definition }} </div>
-        </div>
+        <div v-html="currentSentence.simplified" class="simplified chinese-sentence sentence"></div>
+        <div
+          v-html="currentSentence.traditional"
+          v-if="currentCharacter.simplified !== currentCharacter.traditional"
+          class="traditional chinese-sentence sentence"></div>
+        <div
+          v-if="pinyinAnswer && meaningAnswer"
+          v-html="currentSentence.pinyin"
+          class="sentence pinyin-sentence"></div>
+        <div
+          v-if="pinyinAnswer && meaningAnswer"
+          v-html="currentSentence.english"
+          class="sentence"></div>
       </div>
-      <div class="characters">
-        {{
-          currentCharacter.simplified !== currentCharacter.traditional ?
-            currentCharacter.simplified + " / " + currentCharacter.traditional :
-            currentCharacter.simplified
-        }}
-      </div>
-      <div v-html="currentSentence.simplified" class="simplified chinese-sentence sentence"></div>
-      <div
-        v-html="currentSentence.traditional"
-        v-if="currentCharacter.simplified !== currentCharacter.traditional"
-        class="traditional chinese-sentence sentence"></div>
-      <div
-        v-if="pinyinAnswer && meaningAnswer"
-        v-html="currentSentence.pinyin"
-        class="sentence pinyin-sentence"></div>
-      <div
-        v-if="pinyinAnswer && meaningAnswer"
-        v-html="currentSentence.english"
-        class="sentence"></div>
-      <div class="bottom">
+      <div class="bottom-middle">
         <div class="answers">
           <button v-if="!pinyinAnswer" v-for="(answer, index) in currentPinyinAnswers" :key="`answer-${index}`" v-on:click="pinyinAnswer = answer.pinyin">
             {{ answer.pinyin }}
@@ -124,6 +126,7 @@ const getCurrentSentence = (currentCharacter) => {
   //bold the current character
   sentence.traditional = sentence.traditional.replace(currentCharacter.traditional, "<span style='color:black;font-weight:bold;'>" + currentCharacter.traditional + '</span>' )
   sentence.simplified = sentence.simplified.replace(currentCharacter.simplified, "<span style='color:black;font-weight:bold;'>" + currentCharacter.simplified + '</span>' )
+  sentence.pinyin = sentence.pinyin.replace(currentCharacter.pinyin, "<span style='color:black;font-weight:520;'>" + currentCharacter.pinyin + '</span>' )
   return sentence
 }
 
@@ -315,16 +318,21 @@ h1 {
   width: 100%;
   margin: 0;
 }
+
 .middle {
   width: 75%;
   margin: 0 0 0 20%;
 }
 
-.mobile .bottom {
+.top-middle {
+  position: relative;
+}
+
+.mobile .bottom-middle {
   width: 100%;
   margin: auto;
 }
-.bottom {
+.bottom-middle {
   position: absolute;
   bottom: 25px;
   left: 0px;
@@ -481,18 +489,23 @@ h1 {
 .seals {
   position: absolute;
   left: 80%;
-  top: 30px;
+  top: 15px;
 }
 
 .mobile .seals {
-  position: absolute;
-  top: 110px;
+  top: 5px;
 }
 
 .seals > div {
   display: flex;
   flex-direction: row;
   margin: 10px;
+}
+
+.mobile .seals > div {
+  border-radius: 4px;
+  padding: 3px 3px 0 3px;
+  margin: 5px 5px 0px 5px;
 }
 
 .correct-answer {
@@ -505,11 +518,6 @@ h1 {
   padding: 6px 10px;
 }
 
-.mobile .seals > div {
-  border-radius: 4px;
-  padding: 3px 3px 0 3px;
-  margin: 5px 5px 0px 5px;
-}
 
 .mark {
   position: fixed;
