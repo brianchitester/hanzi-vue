@@ -349,6 +349,7 @@ h1 {
 
 .mobile .left {
   position: relative;
+  font-size: 14px;
 }
 
 .left {
@@ -488,12 +489,8 @@ h1 {
 
 .seals {
   position: absolute;
-  left: 80%;
+  left: 78%;
   top: 15px;
-}
-
-.mobile .seals {
-  top: 5px;
 }
 
 .seals > div {
@@ -514,10 +511,9 @@ h1 {
 }
 
 .mobile .correct-answer {
-  font-size: 10px;
+  font-size: 12px;
   padding: 6px 10px;
 }
-
 
 .mark {
   position: fixed;
