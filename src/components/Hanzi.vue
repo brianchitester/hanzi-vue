@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="stats-link" v-if="isSignedIn && !isMobile" v-on:click="goToStats">
+      <div class="stats-link" v-if="isSignedIn" v-on:click="goToStats">
         view full stats
       </div>
 
