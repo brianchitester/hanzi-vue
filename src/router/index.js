@@ -5,6 +5,7 @@ import SignUp from '@/components/SignUp'
 import Login from '@/components/Login'
 import Stats from '@/components/Stats'
 import Character from '@/components/Character'
+import Words from '@/components/Words'
 
 Vue.use(Router)
 
@@ -15,6 +16,11 @@ export default new Router({
       path: '/',
       name: 'Hanzi',
       component: Hanzi
+    },
+    {
+      path: '/words',
+      name: 'words',
+      component: Words
     },
     {
       path: '/sign-up',
