@@ -5,6 +5,7 @@ yarn-debug.log*
 yarn-error.log*
 config/dev.env.js
 .env*
+dev.env
 
 # Editor directories and files
 .idea

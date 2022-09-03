@@ -92,56 +92,75 @@
 </template>
 
 <script>
-import firebase,{ functions } from 'firebase'
+import firebase from "firebase";
 
 function getRandom(min, max) {
-  return Math.floor(Math.random() * (max - min) + min)
+  return Math.floor(Math.random() * (max - min) + min);
 }
 
 function shuffle(a) {
-  let j, x, i
+  let j, x, i;
   for (i = a.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1))
-    x = a[i]
-    a[i] = a[j]
-    a[j] = x
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
   }
-  return a
+  return a;
 }
 
-const getCurrentSentence = (currentCharacter) => {
-  let possibleSentences = []
-
-  const exampleSentences = Object.keys(sentences).map(index => {
-        if (sentences[index].simplified.indexOf(currentCharacter.simplified) >= 0){
-          return sentences[index]
-        }
-        return null
-      }).filter(sentence => sentence !== null).sort((a, b) => {return a.simplified.length - b.simplified.length }).slice(0, 6)
-
+const getCurrentSentence = currentCharacter => {
+  const exampleSentences = Object.keys(sentences)
+    .map(index => {
+      if (
+        sentences[index].simplified.indexOf(currentCharacter.simplified) >= 0
+      ) {
+        return sentences[index];
+      }
+      return null;
+    })
+    .filter(sentence => sentence !== null)
+    .sort((a, b) => {
+      return a.simplified.length - b.simplified.length;
+    })
+    .slice(0, 6);
 
   // get a random sentence from the list of possible ones
-  let sentence = exampleSentences[getRandom(0, exampleSentences.length)]
+  let sentence = exampleSentences[getRandom(0, exampleSentences.length)];
 
   //bold the current character
-  sentence.traditional = sentence.traditional.replace(currentCharacter.traditional, "<span style='color:black;font-weight:bold;'>" + currentCharacter.traditional + '</span>' )
-  sentence.simplified = sentence.simplified.replace(currentCharacter.simplified, "<span style='color:black;font-weight:bold;'>" + currentCharacter.simplified + '</span>' )
-  sentence.pinyin = sentence.pinyin.replace(currentCharacter.pinyin, "<span style='color:black;font-weight:520;'>" + currentCharacter.pinyin + '</span>' )
-  return sentence
-}
+  sentence.traditional = sentence.traditional.replace(
+    currentCharacter.traditional,
+    "<span style='color:black;font-weight:bold;'>" +
+      currentCharacter.traditional +
+      "</span>"
+  );
+  sentence.simplified = sentence.simplified.replace(
+    currentCharacter.simplified,
+    "<span style='color:black;font-weight:bold;'>" +
+      currentCharacter.simplified +
+      "</span>"
+  );
+  sentence.pinyin = sentence.pinyin.replace(
+    currentCharacter.pinyin,
+    "<span style='color:black;font-weight:520;'>" +
+      currentCharacter.pinyin +
+      "</span>"
+  );
+  return sentence;
+};
 
-
-const defaultMax = 50
-const sentences = require('./sentences.json')
-const characters = require('./words.json')
+const defaultMax = 50;
+const sentences = require("./sentences.json");
+const characters = require("./words.json");
 
 export default {
-  name: 'Words',
+  name: "Words",
   data() {
-    const currentCharacter = characters[getRandom(0, defaultMax)]
-    const currentSentence = getCurrentSentence(currentCharacter)
+    const currentCharacter = characters[getRandom(0, defaultMax)];
+    const currentSentence = getCurrentSentence(currentCharacter);
 
-    console.log(currentCharacter)
+    console.log(currentCharacter);
     return {
       isSignedIn: firebase.auth().currentUser,
       isMobile: window.mobilecheck(),
@@ -151,158 +170,182 @@ export default {
       total: 0,
       pinyinScore: 0,
       meaningScore: 0,
-      pinyinAnswer: '',
-      meaningAnswer: '',
+      pinyinAnswer: "",
+      meaningAnswer: "",
       pastGames: [],
       sentences,
       characters,
       currentCharacter,
       currentSentence
-    }
+    };
   },
   computed: {
-    currentPinyinAnswers: function () {
+    currentPinyinAnswers: function() {
       // initialize with correct answer
-      let answers = [this.currentCharacter]
+      let answers = [this.currentCharacter];
 
       // add 3 wrong answers
       while (answers.length < 4 && this.maxCharacters > 4) {
-        answers = [ ...new Set([ ...answers, this.characters[getRandom(0, parseInt(this.maxCharacters))] ]) ]
+        answers = [
+          ...new Set([
+            ...answers,
+            this.characters[getRandom(0, parseInt(this.maxCharacters))]
+          ])
+        ];
       }
 
-      return shuffle(answers)
+      return shuffle(answers);
     },
-    currentMeaningAnswers: function () {
-      return shuffle(this.currentPinyinAnswers)
+    currentMeaningAnswers: function() {
+      return shuffle(this.currentPinyinAnswers);
     },
-    pinyinCorrect: function () {
-      if (this.pinyinAnswer === '' ) {
-        return undefined
+    pinyinCorrect: function() {
+      if (this.pinyinAnswer === "") {
+        return undefined;
       }
-      return this.pinyinAnswer === this.currentCharacter.pinyin
+      return this.pinyinAnswer === this.currentCharacter.pinyin;
     },
-    meaningCorrect: function () {
-      if (this.meaningAnswer === '' ) {
-        return undefined
+    meaningCorrect: function() {
+      if (this.meaningAnswer === "") {
+        return undefined;
       }
-      return this.meaningAnswer === this.currentCharacter.definition
+      return this.meaningAnswer === this.currentCharacter.definition;
     }
   },
   methods: {
     goToStats: function() {
-      this.$router.push('/stats')
+      this.$router.push("/stats");
     },
     reset: function() {
-      window.localStorage.setItem('maxCharacters', this.maxCharacters)
-      this.pinyinAnswer = ''
-      this.meaningAnswer = ''
-      this.characterIndex = getRandom(0, this.maxCharacters)
-      this.currentCharacter = this.characters[this.characterIndex]
-      this.currentSentence = getCurrentSentence(this.currentCharacter)
+      window.localStorage.setItem("maxCharacters", this.maxCharacters);
+      this.pinyinAnswer = "";
+      this.meaningAnswer = "";
+      this.characterIndex = getRandom(0, this.maxCharacters);
+      this.currentCharacter = this.characters[this.characterIndex];
+      this.currentSentence = getCurrentSentence(this.currentCharacter);
     },
     submitAnswer: function(e) {
-      const {pinyinCorrect, meaningCorrect, currentCharacter} = this
+      const { pinyinCorrect, meaningCorrect, currentCharacter } = this;
       if (this.pinyinCorrect) {
-        this.pinyinScore++
+        this.pinyinScore++;
       }
       if (this.meaningCorrect) {
-        this.meaningScore++
+        this.meaningScore++;
       }
-      this.total++
-      this.pinyinAnswer = ''
-      this.meaningAnswer = ''
+      this.total++;
+      this.pinyinAnswer = "";
+      this.meaningAnswer = "";
 
       //upload to firebase
       if (this.isSignedIn) {
-        const db = firebase.firestore()
-        const scoresRef = db.collection("scores").doc(firebase.auth().currentUser.email)
+        const db = firebase.firestore();
+        const scoresRef = db
+          .collection("scores")
+          .doc(firebase.auth().currentUser.email);
 
         db.runTransaction(function(transaction) {
-            // This code may get re-run multiple times if there are conflicts.
-            return transaction.get(scoresRef).then(function(scores) {
-              if (!scores.exists) {
-                const newCharacter = {}
-                newCharacter[currentCharacter.simplified] = {
-                  pinyin:{
-                    correct: pinyinCorrect ? 1:0,
-                    incorrect: pinyinCorrect ? 0:1
-                  },
-                  meaning:{
-                    correct: meaningCorrect ? 1:0,
-                    incorrect: meaningCorrect ? 0:1
-                  }
+          // This code may get re-run multiple times if there are conflicts.
+          return transaction.get(scoresRef).then(function(scores) {
+            if (!scores.exists) {
+              const newCharacter = {};
+              newCharacter[currentCharacter.simplified] = {
+                pinyin: {
+                  correct: pinyinCorrect ? 1 : 0,
+                  incorrect: pinyinCorrect ? 0 : 1
+                },
+                meaning: {
+                  correct: meaningCorrect ? 1 : 0,
+                  incorrect: meaningCorrect ? 0 : 1
                 }
-                transaction.set(scoresRef, newCharacter)
-                return
+              };
+              transaction.set(scoresRef, newCharacter);
+              return;
+            }
+
+            if (!scores.data()[currentCharacter.simplified]) {
+              const newCharacter = {};
+              newCharacter[currentCharacter.simplified] = {
+                pinyin: {
+                  correct: pinyinCorrect ? 1 : 0,
+                  incorrect: pinyinCorrect ? 0 : 1
+                },
+                meaning: {
+                  correct: meaningCorrect ? 1 : 0,
+                  incorrect: meaningCorrect ? 0 : 1
+                }
+              };
+
+              transaction.update(scoresRef, newCharacter);
+              return;
+            }
+
+            const currentScores = scores.data()[currentCharacter.simplified];
+            const updatedScores = {};
+            updatedScores[currentCharacter.simplified] = {
+              pinyin: {
+                correct: pinyinCorrect
+                  ? currentScores.pinyin.correct + 1
+                  : currentScores.pinyin.correct,
+                incorrect: pinyinCorrect
+                  ? currentScores.pinyin.incorrect
+                  : currentScores.pinyin.incorrect + 1
+              },
+              meaning: {
+                correct: meaningCorrect
+                  ? currentScores.meaning.correct + 1
+                  : currentScores.meaning.correct,
+                incorrect: meaningCorrect
+                  ? currentScores.meaning.incorrect
+                  : currentScores.meaning.incorrect + 1
               }
+            };
 
-              if (!scores.data()[currentCharacter.simplified]) {
-                const newCharacter = {}
-                newCharacter[currentCharacter.simplified] = {
-                  pinyin:{
-                    correct: pinyinCorrect ? 1:0,
-                    incorrect: pinyinCorrect ? 0:1
-                  },
-                  meaning:{
-                    correct: meaningCorrect ? 1:0,
-                    incorrect: meaningCorrect ? 0:1
-                  }
-                }
-
-                transaction.update(scoresRef, newCharacter);
-                return;
-              }
-
-              const currentScores = scores.data()[currentCharacter.simplified]
-              const updatedScores = {}
-              updatedScores[currentCharacter.simplified] = {
-                  pinyin:{
-                    correct: pinyinCorrect ? currentScores.pinyin.correct + 1 : currentScores.pinyin.correct,
-                    incorrect: pinyinCorrect ? currentScores.pinyin.incorrect : currentScores.pinyin.incorrect + 1
-                  },
-                  meaning:{
-                    correct: meaningCorrect ? currentScores.meaning.correct + 1 : currentScores.meaning.correct,
-                    incorrect: meaningCorrect ? currentScores.meaning.incorrect : currentScores.meaning.incorrect + 1
-                  }
-                }
-
-              transaction.update(scoresRef, updatedScores);
-            });
-        }).then(function() {
+            transaction.update(scoresRef, updatedScores);
+          });
+        })
+          .then(function() {
             console.log("Transaction successfully committed!");
-        }).catch(function(error) {
+          })
+          .catch(function(error) {
             console.log("Transaction failed: ", error);
-        });
+          });
       }
 
-      let characterString = this.currentCharacter.simplified === this.currentCharacter.traditional ?
-        this.currentCharacter.simplified :
-        this.currentCharacter.simplified + '/' + this.currentCharacter.traditional
+      let characterString =
+        this.currentCharacter.simplified === this.currentCharacter.traditional
+          ? this.currentCharacter.simplified
+          : this.currentCharacter.simplified +
+            "/" +
+            this.currentCharacter.traditional;
 
-      let pinyinString = this.pinyinCorrect ?
-        "<span class='correct'>" + this.currentCharacter.pinyin + "</span>" :
-        "<span class='incorrect'>" + this.currentCharacter.pinyin + "</span>"
+      let pinyinString = this.pinyinCorrect
+        ? "<span class='correct'>" + this.currentCharacter.pinyin + "</span>"
+        : "<span class='incorrect'>" + this.currentCharacter.pinyin + "</span>";
 
-      let meaningString = this.meaningCorrect ?
-        "<span class='correct'>" + this.currentCharacter.definition + "</span>" :
-        "<span class='incorrect'>" + this.currentCharacter.definition + "</span>"
+      let meaningString = this.meaningCorrect
+        ? "<span class='correct'>" +
+          this.currentCharacter.definition +
+          "</span>"
+        : "<span class='incorrect'>" +
+          this.currentCharacter.definition +
+          "</span>";
 
-      let gameString = characterString + ' ' + pinyinString + ' - ' + meaningString
+      let gameString =
+        characterString + " " + pinyinString + " - " + meaningString;
 
-
-      this.pastGames.push(gameString)
-      this.characterIndex = getRandom(0, this.maxCharacters)
-      this.currentCharacter = this.characters[this.characterIndex]
-      this.currentSentence = getCurrentSentence(this.currentCharacter)
+      this.pastGames.push(gameString);
+      this.characterIndex = getRandom(0, this.maxCharacters);
+      this.currentCharacter = this.characters[this.characterIndex];
+      this.currentSentence = getCurrentSentence(this.currentCharacter);
     },
     login: function(e) {
-      this.$router.push('login')
+      this.$router.push("login");
     },
     signUp: function(e) {
-      this.$router.push('sign-up')
+      this.$router.push("sign-up");
     }
   }
-}
+};
 </script>
 
 <!-- Add 'scoped' attribute 2 limit CSS to this component only -->
@@ -431,11 +474,11 @@ h1 {
   font-size: 1.5em;
 }
 
-.results div{
+.results div {
   display: inline-block;
 }
 
-.results button{
+.results button {
   display: block;
   margin: 10px auto;
   background-color: rgb(68, 158, 71); /* Green */

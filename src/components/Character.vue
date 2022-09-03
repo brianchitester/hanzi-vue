@@ -39,7 +39,6 @@
   const sentences = require('./sentences.json')
   const characters = require('./characters.json')
 
-
   export default {
     name: 'Template',
     data: function() {
@@ -50,11 +49,11 @@
       })
       const hanzi = characters[hanziIndex]
       const exampleSentences = Object.keys(sentences).map(index => {
-        if (sentences[index].simplified.indexOf(hanzi.simplified) >= 0){
+        if (sentences[index].simplified.indexOf(hanzi.simplified) >= 0) {
           return sentences[index]
         }
         return null
-      }).filter(sentence => sentence !== null).sort((a, b) => {return a.simplified.length - b.simplified.length }).slice(0, 15)
+      }).filter(sentence => sentence !== null).sort((a, b) => { return a.simplified.length - b.simplified.length }).slice(0, 15)
 
       return {
         hanzi,

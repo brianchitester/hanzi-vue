@@ -27,7 +27,6 @@
   </div>
 </template>
 
-
 <script>
   import firebase from 'firebase'
 
@@ -54,8 +53,8 @@
         this.$router.push('/character/'+ hanzi)
       },
       getPercentScore: function(scores) {
-        return Math.floor(100 * (scores.pinyin.correct + scores.meaning.correct)
-            / ( scores.pinyin.incorrect + scores.pinyin.correct + scores.meaning.correct + scores.meaning.incorrect ))
+        return Math.floor(100 * (scores.pinyin.correct + scores.meaning.correct) /
+            ( scores.pinyin.incorrect + scores.pinyin.correct + scores.meaning.correct + scores.meaning.incorrect ))
       },
       getScores: function() {
         this.error = null
@@ -67,24 +66,24 @@
               const scores = doc.data()
               this.scores = scores
               this.scoresArray = Object.keys(this.scores).sort(function(a, b) {
-                const aScore = 100 * (scores[a].pinyin.correct + scores[a].meaning.correct)
-                  / ( scores[a].pinyin.incorrect
-                  + scores[a].pinyin.correct
-                  + scores[a].meaning.correct
-                  + scores[a].meaning.incorrect )
+                const aScore = 100 * (scores[a].pinyin.correct + scores[a].meaning.correct) /
+                  ( scores[a].pinyin.incorrect +
+                  scores[a].pinyin.correct +
+                  scores[a].meaning.correct +
+                  scores[a].meaning.incorrect )
 
-                const bScore = 100 * (scores[b].pinyin.correct + scores[b].meaning.correct)
-                  / ( scores[b].pinyin.incorrect
-                  + scores[b].pinyin.correct
-                  + scores[b].meaning.correct
-                  + scores[b].meaning.incorrect )
+                const bScore = 100 * (scores[b].pinyin.correct + scores[b].meaning.correct) /
+                  ( scores[b].pinyin.incorrect +
+                  scores[b].pinyin.correct +
+                  scores[b].meaning.correct +
+                  scores[b].meaning.incorrect )
 
                 return bScore - aScore;
               });
 
               const knownCharacters = Object.keys(this.scores).reduce(function(memo, key) {
-                if ((scores[key].meaning.correct - scores[key].meaning.incorrect) >= scores[key].meaning.correct / 2
-                  && (scores[key].pinyin.correct - scores[key].pinyin.incorrect) >= scores[key].pinyin.correct / 2 ) {
+                if ((scores[key].meaning.correct - scores[key].meaning.incorrect) >= scores[key].meaning.correct / 2 &&
+                  (scores[key].pinyin.correct - scores[key].pinyin.incorrect) >= scores[key].pinyin.correct / 2 ) {
                   return memo + 1
                 }
                 return memo
@@ -97,13 +96,11 @@
               // doc.data() will be undefined in this case
               console.warn("No such document!")
               this.error = "error"
-
             }
         }).catch(error => {
             console.warn("Error getting document:", error)
             this.error = error
         })
-
       }
     }
   }
